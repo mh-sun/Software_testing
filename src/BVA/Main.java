@@ -27,7 +27,44 @@ public class Main {
 
         BVC();
         Robust();
+        Worst();
+    }
 
+    private static void Worst() throws IOException {
+        FileWriter fileWriter=new FileWriter("Robust.csv");
+
+        WriteHeader(fileWriter);
+
+        int counter=0;
+        for(int i=0;i<params.size();i++)
+        {
+            for(int j=0;j<5;j++)
+            {
+                fileWriter.write(++counter+",");
+
+                for (int k = 0; k < params.size(); k++)
+                {
+                    if(j==0){
+                        fileWriter.write(valueOf(params.get(k).min));
+                    }
+                    else if(j==1){
+                        fileWriter.write(valueOf(params.get(k).minPlus));
+                    }
+                    else if(j==2){
+                        fileWriter.write(valueOf(params.get(k).max));
+                    }
+                    else if(j==3){
+                        fileWriter.write(valueOf(params.get(k).maxMinus));
+                    }
+                    else fileWriter.write(valueOf(params.get(k).norm));
+
+                    fileWriter.write(",");
+                }
+                fileWriter.write("\n");
+            }
+        }
+
+        fileWriter.close();
     }
 
     private static void Robust() throws IOException {
