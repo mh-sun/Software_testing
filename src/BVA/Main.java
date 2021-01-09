@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static java.lang.Math.pow;
 import static java.lang.String.valueOf;
 
 public class Main {
@@ -31,40 +32,70 @@ public class Main {
     }
 
     private static void Worst() throws IOException {
-        FileWriter fileWriter=new FileWriter("Robust.csv");
+        FileWriter fileWriter=new FileWriter("Worst.csv");
 
         WriteHeader(fileWriter);
 
-        int counter=0;
-        for(int i=0;i<params.size();i++)
-        {
-            for(int j=0;j<5;j++)
-            {
-                fileWriter.write(++counter+",");
+        ArrayList<ArrayList<Integer>>arrayLists=new ArrayList<>();
 
-                for (int k = 0; k < params.size(); k++)
-                {
-                    if(j==0){
-                        fileWriter.write(valueOf(params.get(k).min));
-                    }
-                    else if(j==1){
-                        fileWriter.write(valueOf(params.get(k).minPlus));
-                    }
-                    else if(j==2){
-                        fileWriter.write(valueOf(params.get(k).max));
-                    }
-                    else if(j==3){
-                        fileWriter.write(valueOf(params.get(k).maxMinus));
-                    }
-                    else fileWriter.write(valueOf(params.get(k).norm));
+        int totalParam= (int) pow(5,params.size());
+        int n=params.size();
+        int[][] finalArray = new int[totalParam][n];
 
-                    fileWriter.write(",");
-                }
-                fileWriter.write("\n");
-            }
-        }
+        MakeArrays(arrayLists);
+
+        MakeFinalArray(arrayLists,finalArray,totalParam,n);
+
+        WritetoFile(finalArray,fileWriter,n);
 
         fileWriter.close();
+    }
+
+    private static void WritetoFile(int[][] finalArray, FileWriter fileWriter, int n) throws IOException {
+        int counter=1;
+        for(int i=0;i<finalArray.length;i++)
+        {
+            fileWriter.write(counter+++",");
+            for(int j=0;j<n;j++)
+            {
+                fileWriter.write(finalArray[i][j]+",");
+            }
+            fileWriter.write("\n");
+        }
+    }
+
+    private static void MakeFinalArray(ArrayList<ArrayList<Integer>> arrayLists, int[][] finalArray, int totalParam, int n) {
+        for (int i=0;i<arrayLists.size();i++)
+        {
+            int counter=0;
+            int temp= (int) pow(5,n-i-1);
+            int temp1= (int) pow(5,i);
+            for(int p=0;p<temp1;p++){
+                for(int j=0;j<arrayLists.get(i).size();j++)
+                {
+                    for(int k=0;k<temp;k++)
+                    {
+                        finalArray[counter++][i]=arrayLists.get(i).get(j);
+                    }
+                }
+            }
+        }
+    }
+
+
+    private static void MakeArrays(ArrayList<ArrayList<Integer>> arrayLists) {
+        for(int i=0;i<params.size();i++)
+        {
+            ArrayList<Integer> arrayList=new ArrayList<>();
+            arrayList.add(params.get(i).min);
+            arrayList.add(params.get(i).minPlus);
+            arrayList.add(params.get(i).max);
+            arrayList.add(params.get(i).maxMinus);
+            arrayList.add(params.get(i).norm);
+
+            arrayLists.add(arrayList);
+        }
+
     }
 
     private static void Robust() throws IOException {
